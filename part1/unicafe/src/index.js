@@ -5,34 +5,37 @@ const Button = ({ handleClick, text }) => (
   <button onClick={handleClick}>{text}</button>
 );
 
-const All = (props) => <p>all {props.good + props.neutral + props.bad}</p>;
-
-const Average = (props) => (
-  <p>
-    average{" "}
-    {(props.good - props.bad) / (props.good + props.neutral + props.bad)}
-  </p>
-);
-
-const Positive = (props) => (
-  <p>
-    positive {(props.good * 100) / (props.good + props.neutral + props.bad)}
-  </p>
-);
+const Statistic = ({ text, value }) => {
+  return (
+    <p>
+      {text} {value} {text === "positive" && "%"}
+    </p>
+  );
+};
 
 const Statistics = ({ good, neutral, bad }) => {
-  if (good === 0 && neutral === 0 && bad === 0) {
+  let total = good + neutral + bad;
+
+  if (total === 0) {
     return <p>No feedback given</p>;
   }
 
+  const all = () => total;
+
+  const average = () => {
+    return (good - bad) / total;
+  };
+
+  const positive = () => (good * 100) / total;
+
   return (
     <div>
-      <p>good {good}</p>
-      <p>neutral {neutral}</p>
-      <p>bad {bad}</p>
-      <All good={good} neutral={neutral} bad={bad} />
-      <Average good={good} neutral={neutral} bad={bad} />
-      <Positive good={good} neutral={neutral} bad={bad} />
+      <Statistic text="good" value={good} />
+      <Statistic text="neutral" value={neutral} />
+      <Statistic text="bad" value={bad} />
+      <Statistic text="all" value={all()} />
+      <Statistic text="average" value={average()} />
+      <Statistic text="positive" value={positive()} />
     </div>
   );
 };
