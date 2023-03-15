@@ -1,9 +1,11 @@
 import React from "react";
 
-const Number = ({ name }) => {
+const Number = ({ name, number }) => {
   return (
     <div>
-      <p>{name}</p>
+      <p>
+        {name} {number}
+      </p>
     </div>
   );
 };
