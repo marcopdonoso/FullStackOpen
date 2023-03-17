@@ -1,8 +1,16 @@
 import React from "react";
+import ListElement from "./ListElement";
 
-const List = ({ countriesToShow }) => {
+const List = ({ countriesToShow, showButton }) => {
   return countriesToShow.map((country, i) => {
-    return <p key={i}>{country.name.common}</p>;
+    return (
+      <ListElement
+        key={i}
+        index={i}
+        countriesToShow={countriesToShow}
+        showButton={showButton}
+      />
+    );
   });
 };
 

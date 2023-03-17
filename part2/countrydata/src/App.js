@@ -6,6 +6,7 @@ import Results from "./components/Results";
 const App = () => {
   const [countriesData, setCountriesData] = useState([]);
   const [finder, setFinder] = useState("");
+  const [countriesToShow, setCountriesToShow] = useState([]);
   //   const API_KEY = process.env.REACT_APP_CA_API_KEY;
 
   //   useEffect(() => {
@@ -28,23 +29,30 @@ const App = () => {
     });
   }, []);
 
-  const countriesToShow =
-    finder === ""
-      ? []
-      : countriesData.filter((country) => {
-          return country.name.common
-            .toLowerCase()
-            .includes(finder.toLowerCase());
-        });
+  useEffect(() => {
+    setCountriesToShow(() => {
+      return finder === ""
+        ? []
+        : countriesData.filter((country) => {
+            return country.name.common
+              .toLowerCase()
+              .includes(finder.toLowerCase());
+          });
+    });
+  }, [finder, countriesData]);
 
   const handleChange = (event) => {
     setFinder(event.target.value);
   };
 
+  const showButton = (props) => {
+    setCountriesToShow([props]);
+  };
+
   return (
     <>
       <Input onChange={handleChange} value={finder} />
-      <Results countriesToShow={countriesToShow} />
+      <Results countriesToShow={countriesToShow} showButton={showButton} />
     </>
   );
 };
