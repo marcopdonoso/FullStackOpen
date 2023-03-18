@@ -7,18 +7,7 @@ const App = () => {
   const [countriesData, setCountriesData] = useState([]);
   const [finder, setFinder] = useState("");
   const [countriesToShow, setCountriesToShow] = useState([]);
-  //   const API_KEY = process.env.REACT_APP_CA_API_KEY;
-
-  //   useEffect(() => {
-  //     console.log("effect");
-  //     axios
-  //       .get("https://countryapi.io/api/all?apikey=" + API_KEY)
-  //       .then((response) => {
-  //         console.log("promise fulfilled");
-  //         setCountriesData(response.data);
-  //         console.log(response.data);
-  //       });
-  //   }, [API_KEY]);
+  const API_KEY = process.env.REACT_APP_WA_API_KEY;
 
   useEffect(() => {
     console.log("effect");
@@ -52,7 +41,11 @@ const App = () => {
   return (
     <>
       <Input onChange={handleChange} value={finder} />
-      <Results countriesToShow={countriesToShow} showButton={showButton} />
+      <Results
+        countriesToShow={countriesToShow}
+        showButton={showButton}
+        API_KEY={API_KEY}
+      />
     </>
   );
 };

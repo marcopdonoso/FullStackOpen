@@ -1,7 +1,31 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 
-const Country = ({ countryData }) => {
+const Country = ({ countryData, API_KEY }) => {
+  const [weatherData, setWeatherData] = useState([]);
   const { name, capital, population, languages, flags } = countryData;
+
+  useEffect(() => {
+    console.log("effect weather data");
+    axios
+      .get(
+        `https://api.weatherapi.com/v1/current.json?key=${API_KEY}&q=${capital[0]}&aqi=no
+        `
+      )
+      .then((response) => {
+        console.log("promise fulfilled on weather");
+        const {
+          temp_c,
+          condition: { icon, text },
+          wind_kph,
+          wind_dir,
+        } = response.data.current;
+        setWeatherData({ temp_c, icon, text, wind_kph, wind_dir });
+      });
+  }, [API_KEY, capital]);
+
+  console.log(weatherData);
+
   return (
     <div>
       <h1>{name.common}</h1>
@@ -14,6 +38,11 @@ const Country = ({ countryData }) => {
         })}
       </ul>
       <img src={flags.svg} alt={flags.alt} width="150px" />
+      <p>Temperature: {weatherData.temp_c} Celcius</p>
+      <img src={weatherData.icon} alt={weatherData.text} width="150px" />
+      <p>
+        wind: {weatherData.wind_kph} kph direction {weatherData.wind_dir}
+      </p>
     </div>
   );
 };
