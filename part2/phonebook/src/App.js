@@ -38,7 +38,6 @@ const App = () => {
     const newPerson = {
       name: newName,
       number: newNumber,
-      id: persons.length + 1,
     };
     persons.some((person) => person.name === newPerson.name)
       ? alert(`${newPerson.name} is already added to phonebook`)
@@ -47,6 +46,16 @@ const App = () => {
           setNewName("");
           setNewNumber("");
         });
+  };
+
+  const handleDelete = (id) => {
+    const personObject = persons.find((p) => {
+      return p.id === id;
+    });
+    window.confirm(`Delete ${personObject.name}?`) &&
+      personService.deletePerson(id).then(() => {
+        setPersons(persons.filter((p) => p.id !== id));
+      });
   };
 
   return (
@@ -67,6 +76,8 @@ const App = () => {
           key={personToShow.id}
           name={personToShow.name}
           number={personToShow.number}
+          id={personToShow.id}
+          handleDelete={handleDelete}
         />
       ))}
     </div>

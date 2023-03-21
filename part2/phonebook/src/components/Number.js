@@ -1,10 +1,10 @@
 import React from "react";
 
-const Number = ({ name, number }) => {
+const Number = ({ name, number, id, handleDelete }) => {
   return (
     <div>
       <p>
-        {name} {number}
+        {name} {number} <button onClick={() => handleDelete(id)}>delete</button>
       </p>
     </div>
   );
