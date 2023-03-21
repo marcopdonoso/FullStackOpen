@@ -54,17 +54,27 @@ const App = () => {
                 p.id !== personUpdated.id ? p : personUpdated
               )
             );
+            setNotificationMessage(["success", `Modified '${newPerson.name}'`]);
+            setTimeout(() => setNotificationMessage(null), 5000);
             setNewName("");
             setNewNumber("");
-            setNotificationMessage(`Modified ${newPerson.name}`);
+          })
+          .catch(() => {
+            setNotificationMessage([
+              "error",
+              `Information of '${newPerson.name}' has already removed from server`,
+            ]);
             setTimeout(() => setNotificationMessage(null), 5000);
+            setPersons(persons.filter((p) => p.name !== newPerson.name));
+            setNewName("");
+            setNewNumber("");
           })
       : personService.create(newPerson).then((createdPerson) => {
+          setNotificationMessage(["success", `Added '${newPerson.name}'`]);
+          setTimeout(() => setNotificationMessage(null), 5000);
           setPersons(persons.concat(createdPerson));
           setNewName("");
           setNewNumber("");
-          setNotificationMessage(`Added ${newPerson.name}`);
-          setTimeout(() => setNotificationMessage(null), 5000);
         });
   };
 
@@ -73,9 +83,19 @@ const App = () => {
       return p.id === id;
     });
     window.confirm(`Delete ${personToDelete.name}?`) &&
-      personService.deletePerson(id).then(() => {
-        setPersons(persons.filter((p) => p.id !== id));
-      });
+      personService
+        .deletePerson(id)
+        .then(() => {
+          setPersons(persons.filter((p) => p.id !== id));
+          setNotificationMessage([
+            "success",
+            `Deleted '${personToDelete.name}'`,
+          ]);
+          setTimeout(() => setNotificationMessage(null), 5000);
+        })
+        .catch(() => {
+          setPersons(persons.filter((p) => p.id !== id));
+        });
   };
 
   return (

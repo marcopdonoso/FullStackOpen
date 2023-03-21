@@ -5,7 +5,7 @@ const Notification = ({ message }) => {
     return null;
   }
 
-  return <div className="success">{message}</div>;
+  return <div className={message[0]}>{message[1]}</div>;
 };
 
 export default Notification;
