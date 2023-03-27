@@ -10,18 +10,14 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [searchEntry, setSearchEntry] = useState("");
-  const [notificationMessage, setNotificationMessage] = useState(null);
+  const [notificationMessage, setNotificationMessage] = useState({
+    type: "",
+    message: null,
+  });
 
   useEffect(() => {
     personService.getAll().then((initialPersons) => setPersons(initialPersons));
   }, []);
-
-  const personsToShow =
-    searchEntry === ""
-      ? persons
-      : persons.filter((person) =>
-          person.name.toLowerCase().startsWith(searchEntry.toLowerCase())
-        );
 
   const handleSearchChange = (event) => {
     setSearchEntry(event.target.value);
@@ -33,6 +29,16 @@ const App = () => {
 
   const handleNumberChange = (event) => {
     setNewNumber(event.target.value);
+  };
+
+  const wipePersonForm = () => {
+    setNewName("");
+    setNewNumber("");
+  };
+
+  const fillNotificationMessage = (type, message) => {
+    setNotificationMessage({ type: type, message: message });
+    setTimeout(() => setNotificationMessage({ message: null }), 5000);
   };
 
   const handleSubmit = (event) => {
@@ -54,27 +60,21 @@ const App = () => {
                 p.id !== personUpdated.id ? p : personUpdated
               )
             );
-            setNotificationMessage(["success", `Modified '${newPerson.name}'`]);
-            setTimeout(() => setNotificationMessage(null), 5000);
-            setNewName("");
-            setNewNumber("");
+            fillNotificationMessage("success", `Modified '${newPerson.name}'`);
+            wipePersonForm();
           })
           .catch(() => {
-            setNotificationMessage([
+            fillNotificationMessage(
               "error",
-              `Information of '${newPerson.name}' has already removed from server`,
-            ]);
-            setTimeout(() => setNotificationMessage(null), 5000);
+              `Information of '${newPerson.name}' has already removed from server`
+            );
             setPersons(persons.filter((p) => p.name !== newPerson.name));
-            setNewName("");
-            setNewNumber("");
+            wipePersonForm();
           })
       : personService.create(newPerson).then((createdPerson) => {
-          setNotificationMessage(["success", `Added '${newPerson.name}'`]);
-          setTimeout(() => setNotificationMessage(null), 5000);
+          fillNotificationMessage("success", `Added '${newPerson.name}'`);
           setPersons(persons.concat(createdPerson));
-          setNewName("");
-          setNewNumber("");
+          wipePersonForm();
         });
   };
 
@@ -87,21 +87,27 @@ const App = () => {
         .deletePerson(id)
         .then(() => {
           setPersons(persons.filter((p) => p.id !== id));
-          setNotificationMessage([
+          fillNotificationMessage(
             "success",
-            `Deleted '${personToDelete.name}'`,
-          ]);
-          setTimeout(() => setNotificationMessage(null), 5000);
+            `Deleted '${personToDelete.name}'`
+          );
         })
         .catch(() => {
           setPersons(persons.filter((p) => p.id !== id));
         });
   };
 
+  const personsToShow =
+    searchEntry === ""
+      ? persons
+      : persons.filter((person) =>
+          person.name.toLowerCase().startsWith(searchEntry.toLowerCase())
+        );
+
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={notificationMessage} />
+      <Notification notificationMessage={notificationMessage} />
       <Filter onChange={handleSearchChange} value={searchEntry} />
       <h3>Add a new</h3>
       <PersonForm
