@@ -1,5 +1,5 @@
 import { useDispatch } from 'react-redux'
-import { actionFilter } from '../reducers/filterReducer'
+import { setFilter } from '../reducers/filterReducer'
 
 const Filter = () => {
 	const dispatch = useDispatch()
@@ -10,7 +10,7 @@ const Filter = () => {
 	}
 
 	const handleChange = event => {
-		dispatch(actionFilter(event.target.value.toUpperCase()))
+		dispatch(setFilter(event.target.value))
 	}
 
 	return (
