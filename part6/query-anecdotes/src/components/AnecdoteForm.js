@@ -1,13 +1,32 @@
 import { useMutation, useQueryClient } from 'react-query'
 import { createNew } from '../requests'
+import { useNotificationDispatch } from '../NotificationContext'
 
 const AnecdoteForm = () => {
 	const queryClient = useQueryClient()
+
+	const notificationDispatch = useNotificationDispatch()
 
 	const newAnecdoteMutation = useMutation(createNew, {
 		onSuccess: newAnecdote => {
 			const anecdotes = queryClient.getQueryData('anecdotes')
 			queryClient.setQueryData('anecdotes', anecdotes.concat(newAnecdote))
+			notificationDispatch({
+				type: 'SET',
+				payload: `you added '${newAnecdote.content}'`,
+			})
+			setTimeout(() => {
+				notificationDispatch({ type: 'RESET' })
+			}, 5000)
+		},
+		onError: error => {
+			notificationDispatch({
+				type: 'SET',
+				payload: error.response.data.error,
+			})
+			setTimeout(() => {
+				notificationDispatch({ type: 'RESET' })
+			}, 5000)
 		},
 	})
 
